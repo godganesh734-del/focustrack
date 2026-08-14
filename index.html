@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusTrack - Login & Register</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Navigation Header */
+        header { background: #4318ff; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header h1 { font-size: 22px; font-weight: bold; }
+        
+        /* Form Container */
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 15px; }
+        .card { background: white; width: 100%; max-width: 450px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        /* Form Toggle Tabs */
+        .tabs { display: flex; margin-bottom: 25px; border-bottom: 2px solid #eee; }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: none; font-size: 16px; font-weight: bold; color: #888; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { color: #4318ff; border-bottom: 3px solid #4318ff; }
+        
+        /* Inputs & Labels */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; transition: 0.2s; }
+        .form-group input:focus, .form-group select:focus { border-color: #4318ff; }
+        
+        .row-group { display: flex; gap: 10px; }
+        .row-group .form-group { flex: 1; }
+        
+        /* Submit Button */
+        .submit-btn { width: 100%; padding: 12px; background: #4318ff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .submit-btn:hover { background: #3311cc; }
+        
+        /* Hide logic */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header Navigation -->
+    <header>
+        <h1>🎯 FocusTrack</h1>
+        <span style="font-size: 14px;">Productivity & Analytics Portal</span>
+    </header>
+
+    <!-- Main Auth Container -->
+    <div class="main-container">
+        <div class="card">
+            
+            <!-- Toggle Tabs (Login vs Register) -->
+            <div class="tabs">
+                <button class="tab-btn active" id="loginTabBtn" onclick="showForm('login')">Login</button>
+                <button class="tab-btn" id="registerTabBtn" onclick="showForm('register')">Register</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Username / Email</label>
+                    <input type="text" id="loginUser" placeholder="Enter username or email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPass" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="submit-btn">Login to Dashboard</button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="John Doe" required>
+                </div>
+                
+                <div class="row-group">
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="regSex" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="regPhone" placeholder="10-digit number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" placeholder="example@mail.com" required>
+                </div>
+
+                <div class="row-group">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="regUsername" placeholder="Unique username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" placeholder="Password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        // Form Switcher Logic
+        function showForm(type) {
+            const loginForm = document.getElementById('loginForm');
+            const regForm = document.getElementById('registerForm');
+            const loginBtn = document.getElementById('loginTabBtn');
+            const regBtn = document.getElementById('registerTabBtn');
+
+            if (type === 'login') {
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                loginBtn.classList.add('active');
+                regBtn.classList.remove('active');
+            } else {
+                loginForm.classList.add('hidden');
+                regForm.classList.remove('hidden');
+                regBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+            }
+        }
+
+        // Handle Registration
+        function handleRegister(e) {
+            e.preventDefault();
+            const userData = {
+                name: document.getElementById('regName').value,
+                sex: document.getElementById('regSex').value,
+                phone: document.getElementById('regPhone').value,
+                email: document.getElementById('regEmail').value,
+                username: document.getElementById('regUsername').value
+            };
+            
+            // Local Storage me Save
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            alert('Account created successfully! Redirecting to Dashboard...');
+            window.location.href = 'dashboard.html';
+        }
+
+        // Handle Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value;
+            // Demo redirect
+            localStorage.setItem('currentUser', JSON.stringify({ name: user, username: user }));
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>
