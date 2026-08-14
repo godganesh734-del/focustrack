@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Timer - FocusTrack</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f0f2f5; color: #333; }
+
+        /* Header Navigation */
+        header { background: #4318ff; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 20px; font-weight: bold; }
+        .user-badge { font-size: 14px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; }
+
+        /* Navigation Bar */
+        nav { background: white; border-bottom: 1px solid #ddd; padding: 10px 20px; display: flex; gap: 15px; }
+        nav a { text-decoration: none; color: #666; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
+        nav a.active, nav a:hover { background: #4318ff; color: white; }
+
+        /* Container & Cards */
+        .container { max-width: 600px; margin: 30px auto; padding: 0 15px; text-align: center; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        h2 { color: #2b3674; margin-bottom: 20px; font-size: 20px; }
+
+        /* Task Selector */
+        .select-group { margin-bottom: 25px; }
+        select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; font-weight: 600; outline: none; }
+
+        /* Timer Display */
+        .timer-circle { font-size: 48px; font-weight: bold; color: #4318ff; font-family: monospace; margin: 20px 0; background: #f4f7fe; padding: 20px; border-radius: 50%; display: inline-block; width: 180px; height: 180px; line-height: 140px; border: 4px solid #4318ff; }
+        
+        /* Control Buttons */
+        .btn-group { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-start { background: #05cd99; color: white; }
+        .btn-pause { background: #ffb800; color: white; }
+        .btn-reset { background: #ff4d49; color: white; }
+
+        /* Scoring Box */
+        .score-box { background: #f8f9fa; border: 1px dashed #4318ff; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .score-input { width: 80px; padding: 10px; font-size: 18px; text-align: center; border-radius: 8px; border: 1px solid #ccc; font-weight: bold; margin: 10px 0; }
+        .btn-save { background: #4318ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">🎯 FocusTrack</div>
+        <div class="user-badge" id="userNameDisplay">User</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav>
+        <a href="dashboard.html">📋 Dashboard</a>
+        <a href="timer.html" class="active">⏱️ Focus Timer</a>
+        <a href="analytics.html">📊 Analytics</a>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <div class="card">
+            <h2>Select Target & Start Focus</h2>
+            
+            <!-- Select Subject -->
+            <div class="select-group">
+                <select id="taskSelect">
+                    <!-- Dynamic tasks from LocalStorage -->
+                </select>
+            </div>
+
+            <!-- Digital Timer -->
+            <div class="timer-circle" id="timerDisplay">00:00</div>
+
+            <!-- Timer Controls -->
+            <div class="btn-group">
+                <button class="btn btn-start" onclick="startTimer()">Start ⏱️</button>
+                <button class="btn btn-pause" onclick="pauseTimer()">Pause ⏸</button>
+                <button class="btn btn-reset" onclick="resetTimer()">Reset 🔄</button>
+            </div>
+
+            <!-- Self Scoring Section (0-10) -->
+            <div class="score-box">
+                <h3 style="font-size: 16px; color: #333;">Rate Your Focus / Session (0 - 10)</h3>
+                <input type="number" class="score-input" id="scoreInput" min="0" max="10" value="5">
+                <br>
+                <button class="btn-save" onclick="saveScore()">Save Task Score 💾</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Load User Info
+        const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Student' };
+        document.getElementById('userNameDisplay').innerText = `👤 ${user.name}`;
+
+        // Load Tasks from Dashboard
+        const defaultTasks = ['Language', 'English', 'Math', 'Physics', 'Chemistry', 'Computer'];
+        const userTasks = JSON.parse(localStorage.getItem('userTasks')) || defaultTasks;
+        
+        const taskSelect = document.getElementById('taskSelect');
+        userTasks.forEach(task => {
+            let option = document.createElement('option');
+            option.value = task;
+            option.textContent = task;
+            taskSelect.appendChild(option);
+        });
+
+        // Timer Variables
+        let seconds = 0;
+        let timerInterval = null;
+
+        function updateDisplay() {
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').innerText = `${mins}:${secs}`;
+        }
+
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    updateDisplay();
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            seconds = 0;
+            updateDisplay();
+        }
+
+        // Save Rating / Score to Storage for Analytics
+        function saveScore() {
+            const selectedTask = taskSelect.value;
+            let scoreVal = parseInt(document.getElementById('scoreInput').value);
+
+            if (scoreVal > 10) scoreVal = 10;
+            if (scoreVal < 0 || isNaN(scoreVal)) scoreVal = 0;
+
+            // Existing Analytics Data retrieve karein ya initialize karein
+            let analyticsData = JSON.parse(localStorage.getItem('analyticsScores')) || {};
+            
+            // Task score save karein
+            analyticsData[selectedTask] = scoreVal;
+            localStorage.setItem('analyticsScores', JSON.stringify(analyticsData));
+
+            alert(`Score of ${scoreVal}/10 saved for "${selectedTask}"! Redirecting to Analytics Page...`);
+            window.location.href = 'analytics.html';
+        }
+    </script>
+</body>
+</html>
