@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FocusTrack</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f0f2f5; color: #333; }
+
+        /* Top Header Navigation */
+        header { background: #4318ff; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 20px; font-weight: bold; }
+        .user-badge { font-size: 14px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; }
+
+        /* Navigation Bar */
+        nav { background: white; border-bottom: 1px solid #ddd; padding: 10px 20px; display: flex; gap: 15px; }
+        nav a { text-decoration: none; color: #666; font-weight: bold; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
+        nav a.active, nav a:hover { background: #4318ff; color: white; }
+
+        /* Container & Cards */
+        .container { max-width: 800px; margin: 30px auto; padding: 0 15px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        h2 { color: #2b3674; margin-bottom: 15px; font-size: 18px; }
+
+        /* Task Form */
+        .add-task-form { display: flex; gap: 10px; flex-wrap: wrap; }
+        input[type="text"] { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; outline: none; }
+        input[type="text"]:focus { border-color: #4318ff; }
+        .btn-add { background: #4318ff; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-add:hover { background: #3311cc; }
+
+        /* Task List */
+        .task-list { list-style: none; margin-top: 15px; }
+        .task-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #eee; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
+        .task-title { font-weight: 600; color: #333; }
+        .btn-delete { background: #ff4d49; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+
+        /* Next Page CTA */
+        .action-bar { text-align: center; margin-top: 20px; }
+        .btn-next { background: #05cd99; color: white; border: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-next:hover { background: #04b385; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">🎯 FocusTrack</div>
+        <div class="user-badge" id="userNameDisplay">User</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav>
+        <a href="dashboard.html" class="active">📋 Dashboard</a>
+        <a href="timer.html">⏱️ Focus Timer</a>
+        <a href="analytics.html">📊 Analytics</a>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Add Subject / Task Card -->
+        <div class="card">
+            <h2>Add Custom Task / Subject</h2>
+            <div class="add-task-form">
+                <input type="text" id="taskInput" placeholder="Enter task (e.g., Physics, Gym, Meditation)">
+                <button class="btn-add" onclick="addTask()">Add Target</button>
+            </div>
+        </div>
+
+        <!-- Task List Card -->
+        <div class="card">
+            <h2>Your Targets / Subjects List</h2>
+            <ul class="task-list" id="taskList">
+                <!-- Dynamic Tasks will appear here -->
+            </ul>
+            
+            <div class="action-bar">
+                <a href="timer.html" class="btn-next">Go to Focus Timer ⏱️</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Load User Info
+        const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Student' };
+        document.getElementById('userNameDisplay').innerText = `👤 ${user.name}`;
+
+        // Initial Default Subjects/Tasks
+        let defaultTasks = [
+            'Language', 'English', 'Math', 'Physics', 'Chemistry', 'Computer', 'Meditation', 'Playing'
+        ];
+
+        // Fetch Tasks from LocalStorage or Set Default
+        let tasks = JSON.parse(localStorage.getItem('userTasks')) || defaultTasks;
+
+        // Render Tasks to UI
+        function renderTasks() {
+            const listEl = document.getElementById('taskList');
+            listEl.innerHTML = '';
+
+            if (tasks.length === 0) {
+                listEl.innerHTML = '<li style="text-align:center; color:#888;">No tasks added yet. Add one above!</li>';
+                return;
+            }
+
+            tasks.forEach((task, index) => {
+                listEl.innerHTML += `
+                    <li class="task-item">
+                        <span class="task-title">${index + 1}. ${task}</span>
+                        <button class="btn-delete" onclick="deleteTask(${index})">Remove</button>
+                    </li>
+                `;
+            });
+
+            // Save to LocalStorage
+            localStorage.setItem('userTasks', JSON.stringify(tasks));
+        }
+
+        // Add Task Logic
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const taskName = input.value.trim();
+
+            if (taskName) {
+                tasks.push(taskName);
+                input.value = '';
+                renderTasks();
+            }
+        }
+
+        // Delete Task Logic
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderTasks();
+        }
+
+        // Initial Load
+        renderTasks();
+    </script>
+</body>
+</html>
