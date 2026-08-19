@@ -24,7 +24,7 @@
 </head>
 <body class="min-h-screen text-slate-100 flex flex-col justify-between relative overflow-x-hidden">
 
-    <!-- Background Decorative Glow Orbs -->
+    <!-- Background Glow Orbs -->
     <div class="absolute top-10 left-10 w-72 h-72 bg-indigo-600/30 rounded-full blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-10 right-10 w-80 h-80 bg-purple-600/20 rounded-full blur-[140px] pointer-events-none"></div>
 
@@ -69,7 +69,10 @@
                         class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Password</label>
+                        <button type="button" onclick="openForgotModal()" class="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 transition">Forgot Password?</button>
+                    </div>
                     <input type="password" id="loginPass" placeholder="••••••••" required 
                         class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                 </div>
@@ -131,6 +134,31 @@
         </div>
     </main>
 
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgotModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 relative border border-slate-700 shadow-2xl">
+            <button onclick="closeForgotModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg">✕</button>
+            <h3 class="text-xl font-bold text-white mb-1">Reset Password</h3>
+            <p class="text-xs text-slate-400 mb-5">Verify your details to set a new password.</p>
+            
+            <form onsubmit="handleResetPassword(event)" class="space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Registered Email</label>
+                    <input type="email" id="resetEmail" required placeholder="name@example.com" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Mobile Number</label>
+                    <input type="tel" id="resetPhone" required placeholder="10 digits" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">New Password</label>
+                    <input type="password" id="resetNewPass" required placeholder="••••••••" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-indigo-500">
+                </div>
+                <button type="submit" class="w-full mt-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg transition">Update Password</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-900/60">
         &copy; 2026 FocusTrack Systems Inc. All rights reserved.
@@ -166,6 +194,14 @@
                 title.innerText = "Create Account";
                 sub.innerText = "Join FocusTrack to manage tasks and boost productivity";
             }
+        }
+
+        function openForgotModal() {
+            document.getElementById('forgotModal').classList.remove('hidden');
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgotModal').classList.add('hidden');
         }
 
         function handleRegister(e) {
@@ -212,6 +248,25 @@
                 window.location.href = 'dashboard.html';
             } else {
                 alert('Invalid Username/Email or Password!');
+            }
+        }
+
+        function handleResetPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value.trim();
+            const phone = document.getElementById('resetPhone').value.trim();
+            const newPass = document.getElementById('resetNewPass').value;
+
+            let users = JSON.parse(localStorage.getItem('focustrack_users') || '[]');
+            const userIndex = users.findIndex(u => u.email === email && u.phone === phone);
+
+            if (userIndex !== -1) {
+                users[userIndex].password = newPass;
+                localStorage.setItem('focustrack_users', JSON.stringify(users));
+                alert('Password updated successfully! Please login with your new password.');
+                closeForgotModal();
+            } else {
+                alert('No account found matching this Email and Mobile Number combination.');
             }
         }
     </script>
