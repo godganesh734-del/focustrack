@@ -3,158 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusTrack - Login & Register</title>
+    <title>FocusTrack - Premium Productivity Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
-        
-        /* Navigation Header */
-        header { background: #4318ff; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        header h1 { font-size: 22px; font-weight: bold; }
-        
-        /* Form Container */
-        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 15px; }
-        .card { background: white; width: 100%; max-width: 450px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        
-        /* Form Toggle Tabs */
-        .tabs { display: flex; margin-bottom: 25px; border-bottom: 2px solid #eee; }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: none; font-size: 16px; font-weight: bold; color: #888; cursor: pointer; transition: 0.3s; }
-        .tab-btn.active { color: #4318ff; border-bottom: 3px solid #4318ff; }
-        
-        /* Inputs & Labels */
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; transition: 0.2s; }
-        .form-group input:focus, .form-group select:focus { border-color: #4318ff; }
-        
-        .row-group { display: flex; gap: 10px; }
-        .row-group .form-group { flex: 1; }
-        
-        /* Submit Button */
-        .submit-btn { width: 100%; padding: 12px; background: #4318ff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .submit-btn:hover { background: #3311cc; }
-        
-        /* Hide logic */
-        .hidden { display: none; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top left, #1e1b4b, #0f172a, #020617);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-effect {
+            box-shadow: 0 0 50px -12px rgba(99, 102, 241, 0.25);
+        }
     </style>
 </head>
-<body>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between relative overflow-x-hidden">
 
-    <!-- Top Header Navigation -->
-    <header>
-        <h1>🎯 FocusTrack</h1>
-        <span style="font-size: 14px;">Productivity & Analytics Portal</span>
+    <!-- Background Decorative Glow Orbs -->
+    <div class="absolute top-10 left-10 w-72 h-72 bg-indigo-600/30 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-80 h-80 bg-purple-600/20 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- Navigation Header -->
+    <header class="w-full border-b border-slate-800/80 bg-slate-950/40 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-white shadow-lg shadow-indigo-500/30">🎯</div>
+                <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">FocusTrack</span>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">
+                Pro Suite v2.0
+            </span>
+        </div>
     </header>
 
-    <!-- Main Auth Container -->
-    <div class="main-container">
-        <div class="card">
+    <!-- Main Auth Section -->
+    <main class="flex-1 flex items-center justify-center p-4 my-8 relative z-10">
+        <div class="w-full max-w-md glass-card rounded-3xl p-8 glow-effect">
             
-            <!-- Toggle Tabs (Login vs Register) -->
-            <div class="tabs">
-                <button class="tab-btn active" id="loginTabBtn" onclick="showForm('login')">Login</button>
-                <button class="tab-btn" id="registerTabBtn" onclick="showForm('register')">Register</button>
+            <!-- Header Text -->
+            <div class="text-center mb-8">
+                <h2 id="formTitle" class="text-2xl font-bold tracking-tight text-white">Welcome Back</h2>
+                <p id="formSub" class="text-xs text-slate-400 mt-1">Enter your details to access your workspace</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="grid grid-cols-2 p-1 bg-slate-900/80 border border-slate-800 rounded-2xl mb-6">
+                <button id="loginTabBtn" onclick="showForm('login')" class="py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-white bg-indigo-600 shadow-md">
+                    Login
+                </button>
+                <button id="registerTabBtn" onclick="showForm('register')" class="py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-white">
+                    Register
+                </button>
             </div>
 
             <!-- LOGIN FORM -->
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Username / Email</label>
-                    <input type="text" id="loginUser" placeholder="Enter username or email" required>
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Username / Email</label>
+                    <input type="text" id="loginUser" placeholder="admin@focustrack.com" required 
+                        class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPass" placeholder="Enter password" required>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                    <input type="password" id="loginPass" placeholder="••••••••" required 
+                        class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                 </div>
-                <button type="submit" class="submit-btn">Login to Dashboard</button>
+                <button type="submit" 
+                    class="w-full mt-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm shadow-lg shadow-indigo-500/25 transition active:scale-[0.98]">
+                    Launch Workspace →
+                </button>
             </form>
 
             <!-- REGISTER FORM -->
-            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="regName" placeholder="John Doe" required>
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Full Name</label>
+                    <input type="text" id="regName" placeholder="John Doe" required 
+                        class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                 </div>
                 
-                <div class="row-group">
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select id="regSex" required>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Gender</label>
+                        <select id="regSex" required class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-3 py-3 text-sm text-slate-300 outline-none transition">
+                            <option value="Male" class="bg-slate-900">Male</option>
+                            <option value="Female" class="bg-slate-900">Female</option>
+                            <option value="Other" class="bg-slate-900">Other</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Mobile Number</label>
-                        <input type="tel" id="regPhone" placeholder="10-digit number" required>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Mobile Number</label>
+                        <input type="tel" id="regPhone" placeholder="10 digits" required 
+                            class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="regEmail" placeholder="example@mail.com" required>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Email Address</label>
+                    <input type="email" id="regEmail" placeholder="john@example.com" required 
+                        class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                 </div>
 
-                <div class="row-group">
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" id="regUsername" placeholder="Unique username" required>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Username</label>
+                        <input type="text" id="regUsername" placeholder="username" required 
+                            class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                     </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="regPassword" placeholder="Password" required>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                        <input type="password" id="regPassword" placeholder="••••••••" required 
+                            class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
                     </div>
                 </div>
 
-                <button type="submit" class="submit-btn">Create Account</button>
+                <button type="submit" 
+                    class="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
+                    Create Account →
+                </button>
             </form>
 
         </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-900/60">
+        &copy; 2026 FocusTrack Systems Inc. All rights reserved.
+    </footer>
 
     <script>
-        // Check if user is already logged in
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('currentUser')) {
                 window.location.href = 'dashboard.html';
             }
         });
 
-        // Form Switcher Logic
         function showForm(type) {
             const loginForm = document.getElementById('loginForm');
             const regForm = document.getElementById('registerForm');
             const loginBtn = document.getElementById('loginTabBtn');
             const regBtn = document.getElementById('registerTabBtn');
+            const title = document.getElementById('formTitle');
+            const sub = document.getElementById('formSub');
 
             if (type === 'login') {
                 loginForm.classList.remove('hidden');
                 regForm.classList.add('hidden');
-                loginBtn.classList.add('active');
-                regBtn.classList.remove('active');
+                loginBtn.className = "py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-white bg-indigo-600 shadow-md";
+                regBtn.className = "py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-white";
+                title.innerText = "Welcome Back";
+                sub.innerText = "Enter your details to access your workspace";
             } else {
                 loginForm.classList.add('hidden');
                 regForm.classList.remove('hidden');
-                regBtn.classList.add('active');
-                loginBtn.classList.remove('active');
+                regBtn.className = "py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-white bg-indigo-600 shadow-md";
+                loginBtn.className = "py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-white";
+                title.innerText = "Create Account";
+                sub.innerText = "Join FocusTrack to manage tasks and boost productivity";
             }
         }
 
-        // Handle Registration
         function handleRegister(e) {
             e.preventDefault();
-            
             const username = document.getElementById('regUsername').value.trim();
             const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
 
-            // Fetch existing users array
             const users = JSON.parse(localStorage.getItem('focustrack_users') || '[]');
 
-            // Check duplicate email or username
             if (users.some(u => u.username === username || u.email === email)) {
-                alert('Yeh Username ya Email pehle se registered hai!');
+                alert('Username or Email already registered!');
                 return;
             }
 
@@ -167,26 +190,19 @@
                 password: password
             };
 
-            // Save to database list
             users.push(userData);
             localStorage.setItem('focustrack_users', JSON.stringify(users));
-            
-            // Set session user
             localStorage.setItem('currentUser', JSON.stringify(userData));
             
-            alert('Account created successfully! Redirecting to Dashboard...');
             window.location.href = 'dashboard.html';
         }
 
-        // Handle Login
         function handleLogin(e) {
             e.preventDefault();
             const inputUser = document.getElementById('loginUser').value.trim();
             const inputPass = document.getElementById('loginPass').value;
 
             const users = JSON.parse(localStorage.getItem('focustrack_users') || '[]');
-
-            // Match username OR email along with password
             const foundUser = users.find(u => 
                 (u.username === inputUser || u.email === inputUser) && u.password === inputPass
             );
