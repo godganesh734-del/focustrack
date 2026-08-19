@@ -114,6 +114,13 @@
     </div>
 
     <script>
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('currentUser')) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
         // Form Switcher Logic
         function showForm(type) {
             const loginForm = document.getElementById('loginForm');
@@ -137,16 +144,36 @@
         // Handle Registration
         function handleRegister(e) {
             e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            // Fetch existing users array
+            const users = JSON.parse(localStorage.getItem('focustrack_users') || '[]');
+
+            // Check duplicate email or username
+            if (users.some(u => u.username === username || u.email === email)) {
+                alert('Yeh Username ya Email pehle se registered hai!');
+                return;
+            }
+
             const userData = {
                 name: document.getElementById('regName').value,
                 sex: document.getElementById('regSex').value,
                 phone: document.getElementById('regPhone').value,
-                email: document.getElementById('regEmail').value,
-                username: document.getElementById('regUsername').value
+                email: email,
+                username: username,
+                password: password
             };
+
+            // Save to database list
+            users.push(userData);
+            localStorage.setItem('focustrack_users', JSON.stringify(users));
             
-            // Local Storage me Save
+            // Set session user
             localStorage.setItem('currentUser', JSON.stringify(userData));
+            
             alert('Account created successfully! Redirecting to Dashboard...');
             window.location.href = 'dashboard.html';
         }
@@ -154,10 +181,22 @@
         // Handle Login
         function handleLogin(e) {
             e.preventDefault();
-            const user = document.getElementById('loginUser').value;
-            // Demo redirect
-            localStorage.setItem('currentUser', JSON.stringify({ name: user, username: user }));
-            window.location.href = 'dashboard.html';
+            const inputUser = document.getElementById('loginUser').value.trim();
+            const inputPass = document.getElementById('loginPass').value;
+
+            const users = JSON.parse(localStorage.getItem('focustrack_users') || '[]');
+
+            // Match username OR email along with password
+            const foundUser = users.find(u => 
+                (u.username === inputUser || u.email === inputUser) && u.password === inputPass
+            );
+
+            if (foundUser) {
+                localStorage.setItem('currentUser', JSON.stringify(foundUser));
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Invalid Username/Email or Password!');
+            }
         }
     </script>
 </body>
